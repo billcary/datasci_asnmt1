@@ -10,22 +10,19 @@ def tweets(fp):
     ## Open the file for reading
     tweetFile = open(fp, 'r')
     
-    ## Read the file
-    tweetFile.readlines()
-    
     ## Initialize an empty list
-    tweetList = []
+    tweetData = []
     
     ## Iterate through file, using json.loads() to load each line into a list of
     ## dict objects from which the tweet text can later be extracted
     for line in tweetFile:
-        tweetList.append(json.loads(line))
+        tweetData.append(json.loads(line))
         
     ## Close the file
     tweetFile.close()
     
     ## Return the tweet list
-    return tweetList
+    return tweetData
     
 def sent_dict(fp):
     
@@ -52,6 +49,10 @@ def main():
     ##hw()
     sentiments = sent_dict(sent_file)
     tweets = tweets(tweet_file)
+    
+    for item in tweetData:
+        print item[u'text']
+        print '------------------------------------'
 
 if __name__ == '__main__':
     main()
