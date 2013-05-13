@@ -1,11 +1,12 @@
 import sys
 import json
+import pdb
 
 def hw():
     print 'Hello, world!'
 
 def tweets(fp):
-    print str(len(fp.readlines()))
+    #pdb.set_trace()
     
     ## Open the file for reading
     tweetFile = open(fp, 'r')
@@ -18,12 +19,13 @@ def tweets(fp):
     
     ## Iterate through file, using json.loads() to load each line into a list of
     ## dict objects from which the tweet text can later be extracted
-    for line in tweetFile:
+    for line in tweetFile.readlines():
         tweetData.append(json.loads(line))
     
     ## Iterate through the full tweets and extract only the text    
     for item in tweetData:
-        tweetText.append(item[u'text'])
+        tweetText.append(item.get('text', ''))
+        ##tweetText.append(item[u'text'])
         
     ## Close the file
     tweetFile.close()
@@ -33,42 +35,50 @@ def tweets(fp):
     
 def sent_dict(fp):
     
-    ## Read the file
-    sentFile = open(fp, 'r').readlines()
+    #pdb.set_trace()
+    ## Open the file
+    sentFile = open(str(fp))
     
     ## Initialize an empty dict object
-    d = {}
+    sentDict = {}
     
     ## Iterate through each line of the file, adding a key and value to the dict
-    for line in sentFile:
-        d.update({line.split('\t')[0]:float(line.split('\t')[1])})
+    for line in sentFile.readlines():
+        if len(line.split('\t')) == 2:
+            word, score = line.split('\t')
+            sentDict.update({word:int(score)})
+        else:
+            word, score = line.split('\t')[0], 0
     
     ## Close the file
     sentFile.close()
     
     ## Return the dict object
-    return d
+    return sentDict
 
 
 def main():
-    sent_file = open(sys.argv[1])
-    tweet_file = open(sys.argv[2])
+    #pdb.set_trace()
+    sent_file = sys.argv[0]
+    tweet_file = sys.argv[1]
     ##hw()
     
     ## Retrieve the dictionary of sentiments
     sentiments = sent_dict(sent_file)
     
+    #pdb.set_trace()
+    
     ## Retrieve the list of tweet texts
-    tweets = tweets(tweet_file)
+    tweetList = tweets(tweet_file)
     
     ## Iterate through the list of tweets, splitting each tweet into
     ## individual words and comparing the word to the sentiment dictionary
     ## to determine a sentiment score for the word.  Accumulate the score.
     ## Print the accumulated score to the screen, then move to the next tweet.
-    for text in tweets:
-        score = 0.0
+    for text in tweetList:
+        score = 0
         for word in text.split():
-            score += sentiments[word]
+            score += sentiments.get(word, 0)
             
         print score
     
