@@ -1,6 +1,6 @@
 import sys
 import json
-import pdb
+#import pdb
 
 def hw():
     print 'Hello, world!'
@@ -46,9 +46,10 @@ def sent_dict(fp):
     for line in sentFile.readlines():
         if len(line.split('\t')) == 2:
             word, score = line.split('\t')
-            sentDict.update({word:int(score)})
         else:
             word, score = line.split('\t')[0], 0
+            
+        sentDict.update({word:float(score)})
     
     ## Close the file
     sentFile.close()
@@ -76,9 +77,9 @@ def main():
     ## to determine a sentiment score for the word.  Accumulate the score.
     ## Print the accumulated score to the screen, then move to the next tweet.
     for text in tweetList:
-        score = 0
+        score = 0.0
         for word in text.split():
-            score += sentiments.get(word, 0)
+            score += sentiments.get(word, 0.0)
             
         print score
     
