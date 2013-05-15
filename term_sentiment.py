@@ -98,12 +98,22 @@ def main():
     ## individual words and comparing the word to the sentiment dictionary
     ## to determine a sentiment score for the word.  Accumulate the score.
     ## Print the accumulated score to the screen, then move to the next tweet.
+    
+    unscoredWordDict = {word:[] for word in unscoredWords} ## Create a disctionary of empty lists from unscoredWords
+    
     for text in tweetList:
         score = 0.0
         for word in text.split():
             score += sentiments.get(word, 0.0)
-            
-        print score
+        
+        for word in unscoredWords:
+            if word in text.split():
+                unscoredWordDict[word].append(score)
+                    
+    unscoredWordSentimentDict = {word:sum(unscoredWordDict[word])/len(unscoredWordDict[word])}
+    
+    for key in unscoredWordSentimentDict:
+        print key, unscoredWordSentimentDict[key]
 
 #def main():
 #    sent_file = open(sys.argv[1])
